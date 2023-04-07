@@ -75,8 +75,11 @@ WSGI_APPLICATION = 'Group_G_EE568_Project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'university_group_g',
+        'USER': 'group_g',
+        'PASSWORD': 'Group_G@EE568',
+        'HOST': '128.153.13.175'
     }
 }
 
