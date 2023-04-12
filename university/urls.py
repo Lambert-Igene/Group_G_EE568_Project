@@ -22,4 +22,13 @@ urlpatterns = [
     path('login', views.login, name='login'),
     path('admin', views.admin, name='admin'),
     path('admin/roaster', views.roaster, name='admin_roaster'),
+    path('admin/salary', views.salary, name='admin_salary'),
+    path('admin/performance', views.performance, name='admin_performance'),
+    path('admin/performance_result', views.performance_result, name='admin_performance_result'),
+    path('professor', views.professor, name='professor'),
+    path('professor/courses', views.courses, name='professor_courses'),
+    path('professor/course_students', views.course_students, name='professor_course_students'),
+    path('student', views.student, name='student'),
+    path('student/department_courses', views.department_courses, name='student.department_courses'),
+
 ]

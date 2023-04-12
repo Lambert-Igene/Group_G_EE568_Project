@@ -21,50 +21,50 @@ def roaster(request):
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def salary(request):
+    template = loader.get_template('admin/salary.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def performance(request):
+    template = loader.get_template('admin/performance.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def performance_result(request):
+    template = loader.get_template('admin/performance_result.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def professor(request):
+    template = loader.get_template('professor/professor.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def courses(request):
+    template = loader.get_template('professor/courses.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def course_students(request):
+    template = loader.get_template('professor/course_students.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def student(request):
+    template = loader.get_template('student/student.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def index(request):
-    template = loader.get_template('university/***.html')
+def department_courses(request):
+    template = loader.get_template('student/department_courses.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
