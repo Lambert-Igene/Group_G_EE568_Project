@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from university import views
 
 urlpatterns = [
-
+    path('', views.login, name='index'),
+    path('login', views.login, name='login'),
+    path('admin', views.admin, name='admin'),
+    path('admin/roaster', views.roaster, name='admin_roaster'),
 ]
