@@ -26,11 +26,29 @@ def login(request):
             except Admin.DoesNotExist:
                 context = {"error": "Invalid Admin ID"}
         elif login_as == 'professor':
-            return redirect('/professor/')
+            try:
+                instructor = Instructor.objects.get(id=id)
+                if instructor.password == password:
+                    request.session["login_as"] = login_as
+                    request.session["id"] = id
+                    return redirect('/professor')
+                else:
+                    context = {"error": "Wrong Password"}
+            except Instructor.DoesNotExist:
+                    context = {"error": "Invalid Instructor ID"}
         elif login_as == 'student':
-            return redirect('/student/')
+            try:
+                student = Student.objects.get(student_id=id)
+                if student.password == password:
+                    request.session["login_as"] = login_as
+                    request.session["student_id"] = id
+                    return redirect('/student')
+                else:
+                    context = {"error": "Wrong Password"}
+            except Student.DoesNotExist:
+                context = {"error": "Invalid Student ID"}
         else :
-            return redirect('/login/')
+            return redirect('/login')
 
     return HttpResponse(template.render(context, request))
 
