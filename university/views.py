@@ -1,11 +1,49 @@
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.template import loader
+
+from university.models import *
 
 
 def login(request):
     template = loader.get_template('login.html')
-    context = {}
+    if request.method == "GET":
+        context = {}
+    elif request.method == "POST":
+        login_as = request.POST.get("login_as", "")
+        id = request.POST.get("id", "")
+        password = request.POST.get("password", "")
 
+        if login_as == 'admin':
+            try:
+                admin = Admin.objects.get(id=id)
+                if admin.password == password:
+                    request.session["login_as"] = login_as
+                    request.session["id"] = id
+                    return redirect('/admin')
+                else:
+                    context = {"error": "Wrong Password"}
+            except Admin.DoesNotExist:
+                context = {"error": "Invalid Admin ID"}
+        elif login_as == 'professor':
+            return redirect('/professor/')
+        elif login_as == 'student':
+            return redirect('/student/')
+        else :
+            return redirect('/login/')
+
+    return HttpResponse(template.render(context, request))
+
+def logout(request):
+    try:
+        del request.session["login_as"]
+        del request.session["id"]
+        context = {'message': 'Logout Successfully'}
+    except KeyError:
+        pass
+        context = {'error': 'Unable to Logout'}
+
+    template = loader.get_template('login.html')
     return HttpResponse(template.render(context, request))
 
 

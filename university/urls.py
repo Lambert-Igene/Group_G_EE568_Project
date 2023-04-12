@@ -20,6 +20,7 @@ from university import views
 urlpatterns = [
     path('', views.login, name='index'),
     path('login', views.login, name='login'),
+    path('logout', views.logout, name='logout'),
     path('admin', views.admin, name='admin'),
     path('admin/roaster', views.roaster, name='admin_roaster'),
     path('admin/salary', views.salary, name='admin_salary'),
