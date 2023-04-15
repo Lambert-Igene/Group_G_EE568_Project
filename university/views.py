@@ -1,3 +1,4 @@
+from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -71,6 +72,7 @@ def admin(request):
 
     return HttpResponse(template.render(context, request))
 
+
 def roaster(request):
     sort_by = request.GET.get('sort_by')
     if sort_by not in ['id', 'name', 'dept_name', 'salary']:
@@ -78,7 +80,6 @@ def roaster(request):
 
     template = loader.get_template('admin/roaster.html')
     professors = Instructor.objects.all().order_by(sort_by).values()
-    print(professors)
     context = {
         'professors': professors,
         'sort_by': sort_by
@@ -86,9 +87,24 @@ def roaster(request):
 
     return HttpResponse(template.render(context, request))
 
+
 def salary(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT dept_name, "
+                       "MIN(salary) AS 'min_salary', "
+                       "MAX(salary) AS 'max_salary', "
+                       "ROUND(AVG(salary),2) AS 'average_salary' "
+                       "FROM instructor "
+                       "WHERE dept_name IS NOT NULL "
+                       "GROUP BY dept_name")
+        columns = [col[0] for col in cursor.description]
+        departments = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
     template = loader.get_template('admin/salary.html')
-    context = {}
+
+    context = {
+        'departments': departments
+    }
 
     return HttpResponse(template.render(context, request))
 
