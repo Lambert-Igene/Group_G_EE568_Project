@@ -131,7 +131,7 @@ def professor(request):
     return HttpResponse(template.render(context, request))
 
 
-def courses(request):
+def professor_course_sections(request):
     semester = request.GET.get('semester')
     if semester not in ['1', '2', 'all']:
         semester = "all"
@@ -163,11 +163,10 @@ def courses(request):
     with connection.cursor() as cursor:
         cursor.execute(query, [prof_id])
         columns = [col[0] for col in cursor.description]
-        professor_courses = [dict(zip(columns, row)) for row in cursor.fetchall()]
-    template = loader.get_template('professor/courses.html')
-    print(professor_courses)
+        course_sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    template = loader.get_template('professor/course_sections.html')
     context = {
-        'professor_courses': professor_courses,
+        'course_sections': course_sections,
         'semester': semester,
         'year': year
     }
