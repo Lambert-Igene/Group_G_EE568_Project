@@ -101,7 +101,92 @@
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-info text-white shadow-info border-radius-lg pt-4 pb-3 d-flex justify-content-between">
+                <h6 class="text-white text-bold text-capitalize ps-3">My Course Sections</h6>
+                <form id="form" method="get" action="{% url 'professor_courses' %}" role="form" class="d-flex">
+                  <select name="semester" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                          style="padding: 0 1rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                    <option class="text-dark" value="all" {% if semester == 'all' %} selected {% endif %}>All Semester</option>
+                    <option class="text-dark" value="1" {% if semester == '1' %} selected {% endif %}>Fall Semester</option>
+                    <option class="text-dark" value="2" {% if semester == '2' %} selected {% endif %}>Spring Semester</option>
+                  </select>
+                  <select name="year" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                          style="padding: 0 1rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                    <option class="text-dark" value="all" {% if year == 'all' %} selected {% endif %}>All Year</option>
+                    <option class="text-dark" value="2019" {% if year == '2019' %} selected {% endif %}>2019</option>
+                    <option class="text-dark" value="2020" {% if year == '2020' %} selected {% endif %}>2020</option>
 
+                  </select>
+                  <div class="text-center" style="margin-right: 1rem;">
+                    <button type="submit" class="btn bg-gradient-primary mb-0">Filter</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card-body px-0 px-md-4 pb-2">
+              <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                  <tr class="text-center">
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Course ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Section ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Semester</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Year</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No Of Students</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for course in professor_courses %}
+                    <tr class="text-center">
+                      <td class="align-middle">
+                        <span class="badge badge-sm bg-gradient-info">{{ course.course_id }}</span>
+                      </td>
+                       <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course.sec_id }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">
+                          {% if course.semester == 1 %}  Fall (1)
+                          {% elif course.semester == 2 %} Spring (2)
+                          {% endif %}
+                        </span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course.year}}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course.no_of_students }}</span>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer py-4  ">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+              <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="copyright text-center text-sm text-muted text-lg-start">
+                  ©
+                  <script>
+                      document.write(new Date().getFullYear())
+                  </script>,
+                  Group G made with
+                  <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   </main>
   <!--   Core JS Files   -->
@@ -110,253 +195,6 @@
   <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
   <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
   <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
-  <script>
-    var ctx = document.getElementById("chart-bars").getContext("2d");
-
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
-        datasets: [{
-          label: "Sales",
-          tension: 0.4,
-          borderWidth: 0,
-          borderRadius: 4,
-          borderSkipped: false,
-          backgroundColor: "rgba(255, 255, 255, .8)",
-          data: [50, 20, 10, 22, 50, 10, 40],
-          maxBarThickness: 6
-        }, ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              suggestedMin: 0,
-              suggestedMax: 500,
-              beginAtZero: true,
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-              color: "#fff"
-            },
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-
-    var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-    new Chart(ctx2, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-
-    var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-    new Chart(ctx3, {
-      type: "line",
-      data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-          label: "Mobile apps",
-          tension: 0,
-          borderWidth: 0,
-          pointRadius: 5,
-          pointBackgroundColor: "rgba(255, 255, 255, .8)",
-          pointBorderColor: "transparent",
-          borderColor: "rgba(255, 255, 255, .8)",
-          borderWidth: 4,
-          backgroundColor: "transparent",
-          fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-          maxBarThickness: 6
-
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-          }
-        },
-        interaction: {
-          intersect: false,
-          mode: 'index',
-        },
-        scales: {
-          y: {
-            grid: {
-              drawBorder: false,
-              display: true,
-              drawOnChartArea: true,
-              drawTicks: false,
-              borderDash: [5, 5],
-              color: 'rgba(255, 255, 255, .2)'
-            },
-            ticks: {
-              display: true,
-              padding: 10,
-              color: '#f8f9fa',
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-          x: {
-            grid: {
-              drawBorder: false,
-              display: false,
-              drawOnChartArea: false,
-              drawTicks: false,
-              borderDash: [5, 5]
-            },
-            ticks: {
-              display: true,
-              color: '#f8f9fa',
-              padding: 10,
-              font: {
-                size: 14,
-                weight: 300,
-                family: "Roboto",
-                style: 'normal',
-                lineHeight: 2
-              },
-            }
-          },
-        },
-      },
-    });
-  </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
