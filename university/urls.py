@@ -30,6 +30,8 @@ urlpatterns = [
     path('professor/courses', views.courses, name='professor_courses'),
     path('professor/course_students', views.course_students, name='professor_course_students'),
     path('student', views.student, name='student'),
-    path('student/department_courses', views.department_courses, name='student_department_courses'),
+    path('student/department_courses', views.student_department_courses, name='student_department_courses'),
+    path('student/department_courses_result', views.student_department_courses_result, name='student_department_courses_result'),
+
 
 ]

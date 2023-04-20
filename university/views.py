@@ -144,8 +144,33 @@ def student(request):
 
     return HttpResponse(template.render(context, request))
 
-def department_courses(request):
+def student_department_courses(request):
     template = loader.get_template('student/department_courses.html')
-    context = {}
+    departments = Department.objects.all()
+    context = {
+        'departments': departments
+    }
 
     return HttpResponse(template.render(context, request))
+
+def student_department_courses_result(request):
+    department = request.GET.get('department')
+    semester = request.GET.get('semester')
+    year = request.GET.get('year')
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT section.*, course.dept_name, course.title FROM section "
+                       "JOIN course ON course.course_id = section.course_id "
+                       "WHERE course.dept_name = %s AND section.semester = %s AND section.year = %s"
+                       , [department, semester, year])
+
+        columns = [col[0] for col in cursor.description]
+        course_sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
+  
+    template = loader.get_template('student/department_courses_result.html')
+    context = {
+        'course_sections': course_sections
+    }
+
+    return HttpResponse(template.render(context, request))
+
