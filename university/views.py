@@ -173,11 +173,49 @@ def professor_course_sections(request):
 
     return HttpResponse(template.render(context, request))
 
-def course_students(request):
+
+def professor_course_students(request):
     template = loader.get_template('professor/course_students.html')
-    context = {}
+    courses = Course.objects.all()
+    context = {
+        'courses': courses
+    }
 
     return HttpResponse(template.render(context, request))
+
+
+def professor_course_students_result(request):
+    course = request.GET.get('course')
+    semester = request.GET.get('semester')
+    year = request.GET.get('year')
+    professor_id = request.session["id"]
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT student.*, takes.sec_id "
+                       "FROM student JOIN takes ON "
+                       "student.student_id = takes.student_id "
+                       "JOIN teaches ON takes.course_id = teaches.course_id "
+                       "AND takes.sec_id = teaches.sec_id "
+                       "AND takes.semester = teaches.semester "
+                       "AND takes.year = teaches.year "
+                       "WHERE teaches.teacher_id = %s "
+                       "AND takes.year = %s AND takes.semester = %s "
+                       "AND takes.course_id = %s"
+                       , [professor_id, year, semester, course])
+
+        columns = [col[0] for col in cursor.description]
+        course_students = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    template = loader.get_template('professor/course_students_result.html')
+    context = {
+        'course_students': course_students,
+        'course': course,
+        'semester': semester,
+        'year': year
+    }
+
+    return HttpResponse(template.render(context, request))
+
 
 def student(request):
     template = loader.get_template('student/student.html')
