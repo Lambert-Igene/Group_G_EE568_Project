@@ -36,7 +36,7 @@ def login(request):
                 else:
                     context = {"error": "Wrong Password"}
             except Instructor.DoesNotExist:
-                    context = {"error": "Invalid Instructor ID"}
+                context = {"error": "Invalid Instructor ID"}
         elif login_as == 'student':
             try:
                 student = Student.objects.get(student_id=id)
@@ -48,10 +48,11 @@ def login(request):
                     context = {"error": "Wrong Password"}
             except Student.DoesNotExist:
                 context = {"error": "Invalid Student ID"}
-        else :
+        else:
             return redirect('/login')
 
     return HttpResponse(template.render(context, request))
+
 
 def logout(request):
     try:
@@ -108,11 +109,13 @@ def salary(request):
 
     return HttpResponse(template.render(context, request))
 
+
 def performance(request):
     template = loader.get_template('admin/performance.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
+
 
 def performance_result(request):
     template = loader.get_template('admin/performance_result.html')
@@ -120,15 +123,53 @@ def performance_result(request):
 
     return HttpResponse(template.render(context, request))
 
+
 def professor(request):
     template = loader.get_template('professor/professor.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
-def courses(request):
-    template = loader.get_template('professor/courses.html')
-    context = {}
+
+def professor_course_sections(request):
+    semester = request.GET.get('semester')
+    if semester not in ['1', '2', 'all']:
+        semester = "all"
+
+    year = request.GET.get('year')
+    if not year:
+        year = "all"
+
+    prof_id = request.session["id"]
+    query = "SELECT section.course_id,section.sec_id, section.semester, section.year, " \
+            "COUNT(*) AS no_of_students FROM section " \
+            "JOIN takes ON section.course_id = takes.course_id " \
+            "AND section.sec_id = takes.sec_id " \
+            "AND section.semester = takes.semester " \
+            "AND section.year = takes.year " \
+            "JOIN teaches ON section.course_id = teaches.course_id " \
+            "AND section.sec_id = teaches.sec_id " \
+            "AND section.semester = teaches.semester " \
+            "AND section.year = teaches.year " \
+            "WHERE teaches.teacher_id = %s " \
+
+    if semester != 'all':
+        query += "AND section.semester = '" + semester + "' "
+    if year != 'all':
+        query += "AND section.year = '" + year + "' "
+
+    query += "GROUP BY section.course_id, section.sec_id,section.semester, section.year"
+
+    with connection.cursor() as cursor:
+        cursor.execute(query, [prof_id])
+        columns = [col[0] for col in cursor.description]
+        course_sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    template = loader.get_template('professor/course_sections.html')
+    context = {
+        'course_sections': course_sections,
+        'semester': semester,
+        'year': year
+    }
 
     return HttpResponse(template.render(context, request))
 
@@ -143,6 +184,7 @@ def student(request):
     context = {}
 
     return HttpResponse(template.render(context, request))
+
 
 def student_department_courses(request):
     template = loader.get_template('student/department_courses.html')
@@ -173,4 +215,3 @@ def student_department_courses_result(request):
     }
 
     return HttpResponse(template.render(context, request))
-

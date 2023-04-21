@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png'%}">
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   <title>
-     Professor | Course Student
+     Professor | Courses
   </title>
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
@@ -46,7 +46,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white " href="{% url 'professor_course_sections' %}">
+          <a class="nav-link text-white active bg-gradient-info" href="{% url 'professor_course_sections' %}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">receipt_long</i>
             </div>
@@ -54,11 +54,11 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white active bg-gradient-info" href="{% url 'professor_course_students' %}">
+          <a class="nav-link text-white" href="{% url 'professor_course_students' %}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">table_view</i>
             </div>
-            <span class="nav-link-text ms-1">Course Student</span>
+            <span class="nav-link-text ms-1">Course Students</span>
           </a>
         </li>
 
@@ -72,9 +72,9 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:">Professor</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Course Student</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Course Sections</li>
           </ol>
-          <h6 class="font-weight-bolder mb-0">Course Student</h6>
+          <h6 class="font-weight-bolder mb-0">Course Sections</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -100,8 +100,93 @@
       </div>
     </nav>
     <!-- End Navbar -->
-     <div class="container-fluid py-4">
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+              <div class="bg-gradient-info text-white shadow-info border-radius-lg pt-4 pb-3 d-flex justify-content-between">
+                <h6 class="text-white text-bold text-capitalize ps-3">My Course Sections</h6>
+                <form id="form" method="get" action="{% url 'professor_course_sections' %}" role="form" class="d-flex">
+                  <select name="semester" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                          style="padding: 0 1rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                    <option class="text-dark" value="all" {% if semester == 'all' %} selected {% endif %}>All Semester</option>
+                    <option class="text-dark" value="1" {% if semester == '1' %} selected {% endif %}>Fall Semester</option>
+                    <option class="text-dark" value="2" {% if semester == '2' %} selected {% endif %}>Spring Semester</option>
+                  </select>
+                  <select name="year" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                          style="padding: 0 1rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                    <option class="text-dark" value="all" {% if year == 'all' %} selected {% endif %}>All Year</option>
+                    <option class="text-dark" value="2019" {% if year == '2019' %} selected {% endif %}>2019</option>
+                    <option class="text-dark" value="2020" {% if year == '2020' %} selected {% endif %}>2020</option>
 
+                  </select>
+                  <div class="text-center" style="margin-right: 1rem;">
+                    <button type="submit" class="btn bg-gradient-primary mb-0">Filter</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card-body px-0 px-md-4 pb-2">
+              <div class="table-responsive">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                  <tr class="text-center">
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Course ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Section ID</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Semester</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Year</th>
+                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No Of Students</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for course_section in course_sections %}
+                    <tr class="text-center">
+                      <td class="align-middle">
+                        <span class="badge badge-sm bg-gradient-info">{{ course_section.course_id }}</span>
+                      </td>
+                       <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course_section.sec_id }}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">
+                          {% if course_section.semester == 1 %}  Fall (1)
+                          {% elif course_section.semester == 2 %} Spring (2)
+                          {% endif %}
+                        </span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course_section.year}}</span>
+                      </td>
+                      <td class="align-middle">
+                        <span class="text-secondary font-weight-bold">{{ course_section.no_of_students }}</span>
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer py-4  ">
+          <div class="container-fluid">
+            <div class="row align-items-center justify-content-lg-between">
+              <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="copyright text-center text-sm text-muted text-lg-start">
+                  ©
+                  <script>
+                      document.write(new Date().getFullYear())
+                  </script>,
+                  Group G made with
+                  <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   </main>
   <!--   Core JS Files   -->
