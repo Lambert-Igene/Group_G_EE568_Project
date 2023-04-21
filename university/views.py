@@ -195,6 +195,7 @@ def student_department_courses(request):
 
     return HttpResponse(template.render(context, request))
 
+
 def student_department_courses_result(request):
     department = request.GET.get('department')
     semester = request.GET.get('semester')
