@@ -39,6 +39,28 @@ class Department(models.Model):
         db_table = 'department'
 
 
+class FundingAward(models.Model):
+    id = models.IntegerField(primary_key=True)
+    agency = models.CharField(max_length=50, blank=True, null=True)
+    amount = models.IntegerField(blank=True, null=True)
+    begin_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'funding_award'
+
+
+class FundingAwardInvestigator(models.Model):
+    funding_award = models.ForeignKey(FundingAward, models.DO_NOTHING, db_column='funding_award')
+    professor = models.ForeignKey('Instructor', models.DO_NOTHING, db_column='professor')
+
+    class Meta:
+        managed = False
+        db_table = 'funding_award_investigator'
+        unique_together = (('funding_award', 'professor'),)
+
+
 class Instructor(models.Model):
     id = models.CharField(db_column='ID', primary_key=True, max_length=8)  # Field name made lowercase.
     name = models.CharField(max_length=20, blank=True, null=True)
@@ -59,6 +81,28 @@ class Prereq(models.Model):
         managed = False
         db_table = 'prereq'
         unique_together = (('course', 'prereq'),)
+
+
+class Publication(models.Model):
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
+    venue = models.CharField(max_length=100, blank=True, null=True)
+    publish_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'publication'
+
+
+class PublicationAuthor(models.Model):
+    publication = models.ForeignKey(Publication, models.DO_NOTHING, db_column='publication')
+    professor = models.ForeignKey(Instructor, models.DO_NOTHING, db_column='professor')
+
+    class Meta:
+        managed = False
+        db_table = 'publication_author'
+        unique_together = (('publication', 'professor'),)
 
 
 class Section(models.Model):
