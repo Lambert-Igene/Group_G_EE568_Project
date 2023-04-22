@@ -118,8 +118,62 @@ def performance(request):
 
 
 def performance_result(request):
+    name = request.GET.get('name')
+    year = request.GET.get('year')
+    semester = request.GET.get('semester')
+
+    # Total number of course sections taught during the semester/year
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM section "
+                       "JOIN teaches ON section.course_id = teaches.course_id "
+                       "AND section.sec_id = teaches.sec_id "
+                       "AND section.semester = teaches.semester "
+                       "AND section.year = teaches.year "
+                       "JOIN instructor ON teaches.teacher_id = instructor.ID "
+                       "WHERE instructor.name = %s "
+                       "AND section.year = %s "
+                       "AND section.semester = %s ", [name, year, semester])
+        total_course_sections = cursor.fetchone()[0]
+
+    # The total number of students taught
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM takes "
+                       "JOIN teaches ON takes.course_id = teaches.course_id "
+                       "AND takes.sec_id = teaches.sec_id "
+                       "AND takes.semester = teaches.semester "
+                       "AND takes.year = teaches.year "
+                       "JOIN instructor ON teaches.teacher_id = instructor.ID "
+                       "WHERE instructor.name = %s "
+                       "AND teaches.year = %s "
+                       "AND teaches.semester = %s ", [name, year, semester])
+        total_students_taught = cursor.fetchone()[0]
+
+    # The total dollar amount of funding the professor has secured
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT SUM(funding_award.amount), COUNT(*) FROM funding_award_investigator "
+                       "JOIN funding_award ON funding_award_investigator.funding_award = funding_award.id "
+                       "JOIN instructor ON funding_award_investigator.professor = instructor.ID "
+                       "WHERE instructor.name = %s ", [name])
+        total_amount_of_funding, total_funding_awards = cursor.fetchone()
+
+    # The total number of papers the professor has published
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM publication_author "
+                       "JOIN instructor ON publication_author.professor = instructor.ID "
+                       "WHERE instructor.name = %s ", [name])
+        total_papers_published = cursor.fetchone()[0]
+
     template = loader.get_template('admin/performance_result.html')
-    context = {}
+    context = {
+        "name": name,
+        "semester": semester,
+        "year": year,
+        "total_course_sections": total_course_sections,
+        "total_students_taught": total_students_taught,
+        "total_amount_of_funding": total_amount_of_funding,
+        "total_funding_awards": total_funding_awards,
+        "total_papers_published": total_papers_published
+    }
 
     return HttpResponse(template.render(context, request))
 
