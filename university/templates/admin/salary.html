@@ -122,26 +122,26 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                   <tr>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Department</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Minimum Salary</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Maximum Salary</th>
-                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Average Salary</th>
+                    <th class="text-uppercase text-secondary font-weight-bolder opacity-7">Department</th>
+                    <th class="text-uppercase text-secondary font-weight-bolder opacity-7">Minimum Salary</th>
+                    <th class="text-uppercase text-secondary font-weight-bolder opacity-7">Maximum Salary</th>
+                    <th class="text-uppercase text-secondary font-weight-bolder opacity-7">Average Salary</th>
                   </tr>
                   </thead>
                   <tbody>
                   {% for department in departments %}
-                    <tr>
+                    <tr class="p-2">
                       <td class="align-middle">
-                        <span class="badge badge-sm bg-gradient-info">{{ department.dept_name }}</span>
+                        <span class="badge bg-gradient-info h6">{{ department.dept_name }}</span>
                       </td>
                       <td class="align-middle">
-                        <span class="text-secondary font-weight-bold">${{ department.min_salary|intcomma }}</span>
+                        <h5 class="mb-0"><i class="fa fa-arrow-up text-success h6"></i> ${{ department.min_salary|intcomma }}</h5>
                       </td>
                       <td class="align-middle">
-                        <span class="text-secondary font-weight-bold">${{ department.max_salary|intcomma }}</span>
+                        <h5 class="mb-0"><i class="fa fa-arrows-up-down text-muted h6"></i>${{ department.max_salary|intcomma }}</h5>
                       </td>
                       <td class="align-middle">
-                        <span class="text-secondary font-weight-bold">${{ department.average_salary|intcomma }}</span>
+                        <h5 class="mb-0"><i class="fa fa-arrow-down text-danger h6"></i>${{ department.average_salary|intcomma }}</h5>
                       </td>
                     </tr>
                   {% endfor %}
