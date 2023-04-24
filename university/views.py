@@ -6,21 +6,23 @@ from django.template import loader
 from university.models import *
 
 
+# Star of generic view functions for all users
+
 def login(request):
     template = loader.get_template('login.html')
     if request.method == "GET":
         context = {}
-    elif request.method == "POST":
+    else:  # POST
         login_as = request.POST.get("login_as", "")
-        id = request.POST.get("id", "")
+        user_id = request.POST.get("id", "")
         password = request.POST.get("password", "")
 
         if login_as == 'admin':
             try:
-                admin = Admin.objects.get(id=id)
+                admin = Admin.objects.get(id=user_id)
                 if admin.password == password:
                     request.session["login_as"] = login_as
-                    request.session["id"] = id
+                    request.session["user_id"] = user_id
                     return redirect('/admin')
                 else:
                     context = {"error": "Wrong Password"}
@@ -28,10 +30,10 @@ def login(request):
                 context = {"error": "Invalid Admin ID"}
         elif login_as == 'professor':
             try:
-                instructor = Instructor.objects.get(id=id)
+                instructor = Instructor.objects.get(id=user_id)
                 if instructor.password == password:
                     request.session["login_as"] = login_as
-                    request.session["id"] = id
+                    request.session["user_id"] = user_id
                     return redirect('/professor')
                 else:
                     context = {"error": "Wrong Password"}
@@ -39,10 +41,10 @@ def login(request):
                 context = {"error": "Invalid Instructor ID"}
         elif login_as == 'student':
             try:
-                student = Student.objects.get(student_id=id)
+                student = Student.objects.get(student_id=user_id)
                 if student.password == password:
                     request.session["login_as"] = login_as
-                    request.session["student_id"] = id
+                    request.session["student_id"] = user_id
                     return redirect('/student')
                 else:
                     context = {"error": "Wrong Password"}
@@ -57,7 +59,7 @@ def login(request):
 def logout(request):
     try:
         del request.session["login_as"]
-        del request.session["id"]
+        del request.session["user_id"]
         context = {'message': 'Logout Successfully'}
     except KeyError:
         pass
@@ -67,6 +69,8 @@ def logout(request):
     return HttpResponse(template.render(context, request))
 
 
+# Star of Admin view functions
+
 def admin(request):
     template = loader.get_template('admin/admin.html')
     context = {}
@@ -74,7 +78,7 @@ def admin(request):
     return HttpResponse(template.render(context, request))
 
 
-def roaster(request):
+def admin_roaster(request):
     sort_by = request.GET.get('sort_by')
     if sort_by not in ['id', 'name', 'dept_name', 'salary']:
         sort_by = 'id'
@@ -89,7 +93,7 @@ def roaster(request):
     return HttpResponse(template.render(context, request))
 
 
-def salary(request):
+def admin_salary(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT dept_name, "
                        "MIN(salary) AS 'min_salary', "
@@ -110,14 +114,14 @@ def salary(request):
     return HttpResponse(template.render(context, request))
 
 
-def performance(request):
+def admin_performance(request):
     template = loader.get_template('admin/performance.html')
     context = {}
 
     return HttpResponse(template.render(context, request))
 
 
-def performance_result(request):
+def admin_performance_result(request):
     name = request.GET.get('name')
     year = request.GET.get('year')
     semester = request.GET.get('semester')
@@ -178,6 +182,9 @@ def performance_result(request):
     return HttpResponse(template.render(context, request))
 
 
+# Star of Professor view functions
+
+
 def professor(request):
     template = loader.get_template('professor/professor.html')
     context = {}
@@ -194,7 +201,7 @@ def professor_course_sections(request):
     if not year:
         year = "all"
 
-    prof_id = request.session["id"]
+    prof_id = request.session["user_id"]
     query = "SELECT section.course_id,section.sec_id, section.semester, section.year, " \
             "COUNT(*) AS no_of_students FROM section " \
             "JOIN takes ON section.course_id = takes.course_id " \
@@ -205,7 +212,7 @@ def professor_course_sections(request):
             "AND section.sec_id = teaches.sec_id " \
             "AND section.semester = teaches.semester " \
             "AND section.year = teaches.year " \
-            "WHERE teaches.teacher_id = %s " \
+            "WHERE teaches.teacher_id = %s "
 
     if semester != 'all':
         query += "AND section.semester = '" + semester + "' "
@@ -242,7 +249,7 @@ def professor_course_students_result(request):
     course = request.GET.get('course')
     semester = request.GET.get('semester')
     year = request.GET.get('year')
-    professor_id = request.session["id"]
+    professor_id = request.session["user_id"]
 
     with connection.cursor() as cursor:
         cursor.execute("SELECT student.*, takes.sec_id "
@@ -254,8 +261,7 @@ def professor_course_students_result(request):
                        "AND takes.year = teaches.year "
                        "WHERE teaches.teacher_id = %s "
                        "AND takes.year = %s AND takes.semester = %s "
-                       "AND takes.course_id = %s"
-                       , [professor_id, year, semester, course])
+                       "AND takes.course_id = %s", [professor_id, year, semester, course])
 
         columns = [col[0] for col in cursor.description]
         course_students = [dict(zip(columns, row)) for row in cursor.fetchall()]
@@ -269,6 +275,9 @@ def professor_course_students_result(request):
     }
 
     return HttpResponse(template.render(context, request))
+
+
+# Star of Student view functions
 
 
 def student(request):
@@ -296,12 +305,12 @@ def student_department_courses_result(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT section.*, course.dept_name, course.title FROM section "
                        "JOIN course ON course.course_id = section.course_id "
-                       "WHERE course.dept_name = %s AND section.semester = %s AND section.year = %s"
-                       , [department, semester, year])
+                       "WHERE course.dept_name = %s AND section.semester = %s AND section.year = %s",
+                       [department, semester, year])
 
         columns = [col[0] for col in cursor.description]
         course_sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
-  
+
     template = loader.get_template('student/department_courses_result.html')
     context = {
         'course_sections': course_sections
