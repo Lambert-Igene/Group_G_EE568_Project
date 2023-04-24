@@ -135,13 +135,13 @@
                         <span class="badge bg-gradient-info h6">{{ department.dept_name }}</span>
                       </td>
                       <td class="align-middle">
-                        <h5 class="mb-0"><i class="fa fa-arrow-up text-success h6"></i> ${{ department.min_salary|intcomma }}</h5>
+                        <h5 class="mb-0"><i class="fa fa-arrow-down text-danger h6"></i> ${{ department.min_salary|intcomma }}</h5>
                       </td>
                       <td class="align-middle">
-                        <h5 class="mb-0"><i class="fa fa-arrows-up-down text-muted h6"></i>${{ department.max_salary|intcomma }}</h5>
+                        <h5 class="mb-0"><i class="fa fa-arrow-up text-success h6"></i>${{ department.max_salary|intcomma }}</h5>
                       </td>
                       <td class="align-middle">
-                        <h5 class="mb-0"><i class="fa fa-arrow-down text-danger h6"></i>${{ department.average_salary|intcomma }}</h5>
+                        <h5 class="mb-0">${{ department.average_salary|intcomma }}</h5>
                       </td>
                     </tr>
                   {% endfor %}
