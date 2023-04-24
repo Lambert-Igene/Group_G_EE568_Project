@@ -56,7 +56,8 @@
               <div class="card-body">
                 <form method="post" action="{% url 'login' %}" role="form" class="text-start">
                   <div class="input-group input-group-outline my-3">
-                    <select name="login_as" class="form-select" required style="padding: 0.625rem 0.75rem !important;" onchange="onchangeLoginAs(this.value)">
+                    <select name="login_as" class="form-select" required style="padding: 0.625rem 0.75rem !important; border: 1px solid lightgray !important;"
+                            onchange="onchangeLoginAs(this.value)">
                       <option value="" disabled selected>Select Login As</option>
                       <option value="admin">Administrator</option>
                       <option value="professor">Professor</option>
