@@ -85,11 +85,19 @@ def admin_roaster(request):
     if sort_by not in ['id', 'name', 'dept_name', 'salary']:
         sort_by = 'id'
 
+    sort_direction = request.GET.get('sort_direction')
+    if sort_direction not in ['asc', 'desc']:
+        sort_direction = 'asc'
+
+    if sort_direction == 'desc':
+        sort_by = f'-{sort_by}'
+
     template = loader.get_template('admin/roaster.html')
     professors = Instructor.objects.all().order_by(sort_by).values()
     context = {
         'professors': professors,
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'sort_direction': sort_direction
     }
 
     return HttpResponse(template.render(context, request))

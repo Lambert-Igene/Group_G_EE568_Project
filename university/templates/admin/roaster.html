@@ -119,14 +119,19 @@
                 <h6 class="text-white text-bold text-capitalize ps-3 mb-0">Roaster of Professors</h6>
                 <form id="form" method="get" action="{% url 'admin_roaster' %}" role="form" class="d-flex">
                   <label class="form-label text-white h6 mb-0" for="sort_by">Sort By:
-                  <select name="sort_by" class="form-select text-md text-white text-bold d-inline-block w-auto" required
-                          style="padding: 0.5rem 0.75rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
-                    <option class="text-dark" value="id" {% if sort_by == 'id' %} selected {% endif %}>ID (Default)</option>
-                    <option class="text-dark" value="name" {% if sort_by == 'name' %} selected {% endif %}>Name</option>
-                    <option class="text-dark" value="dept_name" {% if sort_by == 'dept_name' %} selected {% endif %}>Department</option>
-                    <option class="text-dark" value="salary" {% if sort_by == 'salary' %} selected {% endif %}>Salary</option>
+                    <select name="sort_by" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                            style="padding: 0.5rem 0.75rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                      <option class="text-dark" value="id" {% if sort_by == 'id' %} selected {% endif %}>ID (Default)</option>
+                      <option class="text-dark" value="name" {% if sort_by == 'name' %} selected {% endif %}>Name</option>
+                      <option class="text-dark" value="dept_name" {% if sort_by == 'dept_name' %} selected {% endif %}>Department</option>
+                      <option class="text-dark" value="salary" {% if sort_by == 'salary' %} selected {% endif %}>Salary</option>
+                    </select>
+                  </label>
+                  <select name="sort_direction" class="form-select text-md text-white text-bold d-inline-block w-auto" required
+                            style="padding: 0.5rem 0.75rem !important; margin-right: 1rem; appearance: auto; border: 1px solid #FFF !important;">
+                    <option class="text-dark" value="asc" {% if sort_direction == 'asc' %} selected {% endif %}>ASC</option>
+                    <option class="text-dark" value="desc" {% if sort_direction == 'desc' %} selected {% endif %}>DESC</option>
                   </select>
-                   </label>
                   <div class="text-center" style="margin-right: 1rem;">
                     <button type="submit" class="btn bg-gradient-info mb-0">Sort</button>
                   </div>
