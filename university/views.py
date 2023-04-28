@@ -57,13 +57,9 @@ def login(request):
 
 
 def logout(request):
-    try:
-        del request.session["login_as"]
-        del request.session["user_id"]
-        context = {'message': 'Logout Successfully'}
-    except KeyError:
-        pass
-        context = {'error': 'Unable to Logout'}
+    request.session.delete("login_as")
+    request.session.delete("user_id")
+    context = {'message': 'Logout Successfully'}
 
     template = loader.get_template('login.html')
     return HttpResponse(template.render(context, request))
@@ -72,6 +68,9 @@ def logout(request):
 # Star of Admin view functions
 
 def admin(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'admin':
+        return redirect('/login')
+
     template = loader.get_template('admin/admin.html')
     context = {}
 
@@ -79,6 +78,9 @@ def admin(request):
 
 
 def admin_roaster(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'admin':
+        return redirect('/login')
+
     sort_by = request.GET.get('sort_by')
     if sort_by not in ['id', 'name', 'dept_name', 'salary']:
         sort_by = 'id'
@@ -94,6 +96,9 @@ def admin_roaster(request):
 
 
 def admin_salary(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'admin':
+        return redirect('/login')
+
     with connection.cursor() as cursor:
         cursor.execute("SELECT dept_name, "
                        "MIN(salary) AS 'min_salary', "
@@ -115,6 +120,9 @@ def admin_salary(request):
 
 
 def admin_performance(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'admin':
+        return redirect('/login')
+
     template = loader.get_template('admin/performance.html')
     context = {}
 
@@ -122,6 +130,9 @@ def admin_performance(request):
 
 
 def admin_performance_result(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'admin':
+        return redirect('/login')
+
     name = request.GET.get('name')
     year = request.GET.get('year')
     semester = request.GET.get('semester')
@@ -186,6 +197,9 @@ def admin_performance_result(request):
 
 
 def professor(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'professor':
+        return redirect('/login')
+
     template = loader.get_template('professor/professor.html')
     context = {}
 
@@ -193,6 +207,9 @@ def professor(request):
 
 
 def professor_course_sections(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'professor':
+        return redirect('/login')
+
     semester = request.GET.get('semester')
     if semester not in ['1', '2', 'all']:
         semester = "all"
@@ -213,16 +230,19 @@ def professor_course_sections(request):
             "AND section.semester = teaches.semester " \
             "AND section.year = teaches.year " \
             "WHERE teaches.teacher_id = %s "
+    query_params = [prof_id]
 
     if semester != 'all':
-        query += "AND section.semester = '" + semester + "' "
+        query += "AND section.semester = %s "
+        query_params.append(semester)
     if year != 'all':
-        query += "AND section.year = '" + year + "' "
+        query += "AND section.year = %s "
+        query_params.append(year)
 
     query += "GROUP BY section.course_id, section.sec_id,section.semester, section.year"
 
     with connection.cursor() as cursor:
-        cursor.execute(query, [prof_id])
+        cursor.execute(query, query_params)
         columns = [col[0] for col in cursor.description]
         course_sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
     template = loader.get_template('professor/course_sections.html')
@@ -236,6 +256,9 @@ def professor_course_sections(request):
 
 
 def professor_course_students(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'professor':
+        return redirect('/login')
+
     template = loader.get_template('professor/course_students.html')
     courses = Course.objects.all()
     context = {
@@ -246,6 +269,9 @@ def professor_course_students(request):
 
 
 def professor_course_students_result(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'professor':
+        return redirect('/login')
+
     course = request.GET.get('course')
     semester = request.GET.get('semester')
     year = request.GET.get('year')
@@ -281,6 +307,9 @@ def professor_course_students_result(request):
 
 
 def student(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'student':
+        return redirect('/login')
+
     template = loader.get_template('student/student.html')
     context = {}
 
@@ -288,6 +317,8 @@ def student(request):
 
 
 def student_department_courses(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'student':
+        return redirect('/login')
     template = loader.get_template('student/department_courses.html')
     departments = Department.objects.all()
     context = {
@@ -298,6 +329,8 @@ def student_department_courses(request):
 
 
 def student_department_courses_result(request):
+    if not request.session.get("user_id") or request.session.get("login_as") != 'student':
+        return redirect('/login')
     department = request.GET.get('department')
     semester = request.GET.get('semester')
     year = request.GET.get('year')
