@@ -36,7 +36,7 @@ Installation
 -----------------------------------------------
 Clone this repository: 
 ```shell
-git clone https://github.com/kanizfatima22/Group_G_EE568_Project/tree/master/Group_G_EE568_Project
+git clone https://github.com/kanizfatima22/Group_G_EE568_Project
 ```
 Run the server:
 ```shell
