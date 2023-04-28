@@ -1,10 +1,5 @@
 # Group G EE568 Project
 
-- ER Diagram: ![er-diagram](https://user-images.githubusercontent.com/29764960/235255029-b3de6615-2ebb-4b29-8729-66435176ca41.png)
-- Database Schema Diagram: ![database_model](https://user-images.githubusercontent.com/29764960/235255117-a00fd48d-c5b4-463c-aa28-72f842d5618e.png)
-- Design Manual:
-- User Manual:
-
 ## About
 
 My team designed and implement a web-based university management system. The system made use of the university database that we have been working on since the beginning of this semester, but with some extension. The system utilizes Django web framework to connect to MySQL to hold together all components: loading data from the database, representing the data as Python objects, and dynamically creating a web page for displaying the data. The user interface was built using Django templates.
@@ -21,6 +16,13 @@ Professors can do the following:
 
 Students can do the following:
 - F6. Query the list of course sections offered by dept in a given year and semester.
+
+## Documents
+
+- Design Manual:
+- User Manual:
+- ER Diagram: ![er-diagram](https://user-images.githubusercontent.com/29764960/235255029-b3de6615-2ebb-4b29-8729-66435176ca41.png)
+- Database Schema Diagram: ![database_model](https://user-images.githubusercontent.com/29764960/235255117-a00fd48d-c5b4-463c-aa28-72f842d5618e.png)
 
 ## Prerequisites
 User needs to install the listed prerequisites before they can use this project:
