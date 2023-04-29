@@ -19,7 +19,7 @@ Students can do the following:
 
 ## Documents
 
-- Design Manual:
+- [Design Manual](https://github.com/kanizfatima22/Group_G_EE568_Project/blob/743f2ec0c6ac3447f48c9f753adaa1d112cc94e6/Design%20Manual.pdf)
 - User Manual:
 - ER Diagram: ![er-diagram](https://user-images.githubusercontent.com/29764960/235255029-b3de6615-2ebb-4b29-8729-66435176ca41.png)
 - Database Schema Diagram: ![database_model](https://user-images.githubusercontent.com/29764960/235255117-a00fd48d-c5b4-463c-aa28-72f842d5618e.png)
